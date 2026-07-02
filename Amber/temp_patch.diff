@@ -1,0 +1,66 @@
+﻿*** Begin Patch
+*** Update File: Assets\StarRailDustChronicle\Runtime\DustChronicleRouteRunController.cs
+@@ using System.Collections.Generic;
+ using System.Text;
+ using UnityEngine;
++#if UNITY_EDITOR
++using UnityEditor;
++#endif
+@@             }
+             else
+             {
++                if (node != null && node.NodeType == DustChronicleRouteNodeType.Event)
++                {
++                    DrawEventNodePopup(node);
++                }
++                else
++                {
++                    GUILayout.Label("This is a non-combat node placeholder. Use the button below to resolve it.");
++                    if (GUILayout.Button("Resolve Current Node", GUILayout.Height(32f)))
++                    {
++                        ResolveNonCombatNode();
++                    }
++                }
+-                GUILayout.Label("This is a non-combat node placeholder. Use the button below to resolve it.");
+-                if (GUILayout.Button("Resolve Current Node", GUILayout.Height(32f)))
+-                {
+-                    ResolveNonCombatNode();
+-                }
+             }
+         }
+ 
++        private void DrawEventNodePopup(DustChronicleRouteNodeDefinition node)
++        {
++            var popupWidth = 420f;
++            var popupHeight = 200f;
++            var popupRect = new Rect(
++                (Screen.width - popupWidth) * 0.5f,
++                (Screen.height - popupHeight) * 0.5f,
++                popupWidth,
++                popupHeight);
++
++            var shadowRect = new Rect(popupRect.x + 3f, popupRect.y + 3f, popupRect.width, popupRect.height);
++            GUI.Box(shadowRect, "", GUI.skin.window);
++            GUI.Box(popupRect, "事件关卡", GUI.skin.window);
++
++            GUILayout.BeginArea(new Rect(popupRect.x + 20f, popupRect.y + 30f, popupRect.width - 40f, popupRect.height - 50f));
++            GUILayout.Label(node.DisplayName, new GUIStyle(GUI.skin.label) { fontStyle = FontStyle.Bold, fontSize = 14 });
++            GUILayout.Space(8f);
++            if (!string.IsNullOrWhiteSpace(node.Description))
++            {
++                GUILayout.Label(node.Description);
++            }
++
++            GUILayout.Space(12f);
++            if (GUILayout.Button("立即通关并判定结束play模式", GUILayout.Height(36f)))
++            {
++#if UNITY_EDITOR
++                EditorApplication.ExitPlaymode();
++#endif
++            }
++
++            GUILayout.EndArea();
++        }
++
+         private void DrawNodeCompleteUi()
+*** End Patch

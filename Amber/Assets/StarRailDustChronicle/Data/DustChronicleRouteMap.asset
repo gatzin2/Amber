@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c0154293c4390c419a607b8aadcdd45, type: 3}
+  m_Name: DustChronicleRouteMap
+  m_EditorClassIdentifier: 
+  mapName: Dust Chronicle Whitebox Route
+  summary: Sample three-lane route map. Replace node names and content keys with
+    your authored encounters.
+  lanes:
+  - displayName: Left Route
+    nodes:
+    - displayName: Opening Skirmish
+      nodeType: 0
+      contentKey: combat/slime_intro
+      description: First combat sample for the left route.
+    - displayName: Supply Stop
+      nodeType: 2
+      contentKey: shop/basic_supplies
+      description: Placeholder shop node.
+    - displayName: Dust Ambush
+      nodeType: 0
+      contentKey: combat/dust_ambush
+      description: A second authored combat encounter.
+    - displayName: Route Finale
+      nodeType: 6
+      contentKey: combat/route_boss_left
+      description: Boss placeholder for the left route.
+  - displayName: Center Route
+    nodes:
+    - displayName: Collapsed Causeway
+      nodeType: 3
+      contentKey: event/causeway
+      description: A mid-route event choice.
+    - displayName: Patrol Clash
+      nodeType: 0
+      contentKey: combat/patrol_clash
+      description: Standard combat encounter.
+    - displayName: Campfire
+      nodeType: 4
+      contentKey: rest/campfire
+      description: Rest or upgrade style node.
+    - displayName: Vault Door
+      nodeType: 1
+      contentKey: combat/vault_guard
+      description: Elite encounter placeholder.
+    - displayName: Route Finale
+      nodeType: 6
+      contentKey: combat/route_boss_center
+      description: Boss placeholder for the center route.
+  - displayName: Right Route
+    nodes:
+    - displayName: Broken Market
+      nodeType: 2
+      contentKey: shop/broken_market
+      description: Shop-first route opener.
+    - displayName: Silent Hall
+      nodeType: 3
+      contentKey: event/silent_hall
+      description: Narrative or choice node.
+    - displayName: Relic Cache
+      nodeType: 5
+      contentKey: treasure/relic_cache
+      description: Treasure placeholder.
+    - displayName: Rear Guard
+      nodeType: 0
+      contentKey: combat/rear_guard
+      description: Standard combat before the finale.
+    - displayName: Route Finale
+      nodeType: 6
+      contentKey: combat/route_boss_right
+      description: Boss placeholder for the right route.
