@@ -160,8 +160,8 @@ MonoBehaviour:
   statusBoard: {fileID: 1519991541}
   showPlayModeGui: 1
   directBattleType: 0
-  mapMode: 0
-  branchingMapConfig: {fileID: 0}
+  mapMode: 1
+  branchingMapConfig: {fileID: 11400000, guid: 00ea8dd8f011ec44ea940c6194a8189a, type: 2}
   mapController: {fileID: 0}
   mapVisualizer: {fileID: 0}
   flowState: 0
