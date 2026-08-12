@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: DustChronicleMapConfig
+  m_EditorClassIdentifier: Assembly-CSharp:Amber.StarRailDustChronicle:MapGenerationConfig
+  totalLayerCount: 7
+  startLayerRoomCount: 3
+  midLayerMaxRoomCount: 5
+  layerVerticalSpacing: 120
+  maxHorizontalSpread: 400
+  randomHorizontalOffset: 30
+  randomVerticalOffset: 10
+  battleWeight: 0.5
+  eventWeight: 0.2
+  shopWeight: 0.15
+  restWeight: 0.1
+  treasureWeight: 0.05

@@ -1,0 +1,192 @@
+﻿-
+-
+Unity杀戮尖塔地图算法实现
+效果展示
+随机切换地图效果展示
+=== 实现思路 ===
+=== 一. 地图房间生成规则 ===
+①房间数量规则
+起点层&#xff1a;房间数量动态配置
+中间层&#xff1a;房间数量 :{最小值&#xff1a;2 &#xff0c;最大值起点数量*2-1}
+boss 层&#xff1a;房间数量&#61;1
+②房间位置
+X: 房间在该层平铺后&#43;随机横向偏移
+Y&#xff1a;当前层数  * 每层高度&#43;随机纵向偏移
+=== 二. 路线生成规则 ===
+①获取当前房间最近的上层房间&#xff0c;将该房间存入当前房间上层对象列表中
+②断路检索&#xff1a;如果下层房间没有任何对象将当前层设置到上层对象列表中&#xff0c;下层距离此层距离最近的对象将此层添加至上层对象列表
+③链接当前层和上层对象列表中的对象
+=== 核心代码展示&#xff1a; ===
+一. 地图房间生成规则
+①地图管理类初始化层数据
+[CODE]
+[CODE]
+//MapManager
+public void InitData()
+{
+if (layerDic &#61;&#61; null)
+{
+layerDic &#61; new Dictionary<int, MaplayerItem>();
+}
+if (layerList &#61;&#61; null)
+{
+layerList &#61; new List<MaplayerItem>();
+}
+for (int i &#61; 0; i < MaxLayer; i&#43;&#43;)
+{
+MaplayerItem item &#61; new MaplayerItem(i, entranceCount);
+ELayerType eLayerType &#61; i &#61;&#61; 0 ? ELayerType.Start : i &#61;&#61; MaxLayer - 1 ? ELayerType.End : ELayerType.Cent;
+item.InitData(eLayerType, itemBase, rootObj);
+layerDic.Add(i, item);
+layerList.Add(item);
+}
+}
+[/CODE]
+[/CODE]
+②层数据初始化地图房间数据
+[CODE]
+[CODE]
+//MaplayerItem
+public void InitData(ELayerType layerType, MapItemBase item, Transform rootObj)
+{
+int count &#61; 0;
+this.layerType &#61; layerType;
+switch (layerType)
+{
+case ELayerType.Start:
+count &#61; entranceCount;
+break;
+case ELayerType.Cent:
+count &#61; entranceCount &#43; Random.Range(2 - entranceCount, entranceCount);
+break;
+case ELayerType.End:
+count &#61; 1;
+break;
+default:
+break;
+}
+InitLayerDic(count, item, rootObj);
+}
+public void InitLayerDic(int Count, MapItemBase item, Transform rootObj)
+{
+if (MapItemDic &#61;&#61; null)
+{
+MapItemDic &#61; new Dictionary<int, MapItemBase>();
+}
+else
+{
+Clear();
+}
+for (int i &#61; 0; i < Count; i&#43;&#43;)
+{
+MapItemBase nowItem &#61; MonoBehaviour.Instantiate(item, rootObj);
+int xR &#61; Random.Range(-xRandom, xRandom);
+int yR &#61; Random.Range(-yRandom, yRandom);
+if (nowLayer &#61;&#61; 0)
+{
+yR &#61; 0;
+}
+float xPos &#61; GetPosX(i, Count);
+float addendPosY &#61; ELayerType.End &#61;&#61; layerType ? 70 : 0;
+nowItem.transform.localPosition &#61; new Vector3(xPos, nowLayer * ySize &#43; yR&#43;addendPosY, 0);
+nowItem.RefreshUI(nowLayer &#43; &#34;_&#34; &#43; i, nowLayer);
+MapItemDic.Add(i, nowItem);
+}
+}
+private float GetPosX(int nowIndix, float Count)
+{
+float onePos &#61; entranceMaxCount * xSize / (Count &#43; 1);
+float pos &#61; (nowIndix &#43; 1) * onePos;
+int xR &#61; Random.Range(-xRandom, xRandom);
+return pos &#43; xR;
+}
+[/CODE]
+[/CODE]
+二. 路线生成规则
+①路线算法核心代码展示
+[CODE]
+[CODE]
+/// <summary>
+/// 刷新地图路径数据
+/// </summary>
+public void RefreshLineData()
+{
+if (layerList &#61;&#61; null)
+{
+return;
+}
+int MaxCount &#61; layerList.Count;
+for (int i &#61; 0; i < layerList.Count; i&#43;&#43;)
+{
+//上层
+MaplayerItem TopItem &#61; i &#61;&#61; MaxCount - 1 ? null : layerList[i &#43; 1];
+//当前层
+MaplayerItem nowItem &#61; layerList[i];
+nowItem.RefreshTopLineData(TopItem &#61;&#61; null ? null : TopItem.MapItemDic);
+}
+for (int i &#61; 0; i < layerList.Count; i&#43;&#43;)
+{
+//当前层
+MaplayerItem nowItem &#61; layerList[i];
+////下层
+MaplayerItem DownItem &#61; i &#61;&#61; 0 ? null : layerList[i - 1];
+if (DownItem !&#61; null)
+{
+nowItem.TopLineAdditional(DownItem.MapItemDic);
+}
+}
+}
+[/CODE]
+[/CODE]
+[CODE]
+[CODE]
+/// <summary>
+/// 刷新上层数据列表
+/// </summary>
+/// <param name&#61;&#34;ComparelayerDic&#34;></param>
+public void RefreshTopLineData(Dictionary<int, MapItemBase> ComparelayerDic)
+{
+if (MapItemDic &#61;&#61; null) { return; }
+foreach (var item in MapItemDic)
+{
+MapItemBase nowItem &#61; item.Value;
+nowItem.TopItemList.Clear();
+//获取距离此节点最近的对象
+MapItemBase topItem&#61; nowItem.GetNearestDistanceItem(ComparelayerDic);
+if (topItem !&#61; null) {
+topItem.DownItem &#61; nowItem;
+nowItem.TopItemList.Add(topItem);
+}
+}
+}
+[/CODE]
+[/CODE]
+[CODE]
+[CODE]
+/// <summary>
+/// 断路检索
+/// </summary>
+/// <param name&#61;&#34;ComparelayerDic&#34;></param>
+public void TopLineAdditional(Dictionary<int, MapItemBase> ComparelayerDic) {
+if (MapItemDic &#61;&#61; null) { return; }
+foreach (var item in MapItemDic)
+{
+MapItemBase nowItem &#61; item.Value;
+if (nowItem.DownItem&#61;&#61;null)
+{
+//获取距离此节点最近的对象
+MapItemBase downItem &#61; nowItem.GetNearestDistanceItem(ComparelayerDic);
+if (downItem !&#61; null)
+{
+nowItem.DownItem &#61; downItem;
+downItem.TopItemList.Add(nowItem);
+}
+}
+}
+}
+[/CODE]
+[/CODE]
+项目源码&#xff1a;
+https://download.csdn.net/download/qq_33894287/89114692
+-
+-
